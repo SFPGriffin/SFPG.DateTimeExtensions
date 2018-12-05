@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Copyright>S. F. P. Griffin</Copyright>
+    <PackageLicenseUrl>https://www.gnu.org/licenses/gpl-3.0.txt</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/SFPGriffin/SFPG.DateTimeExtensions</RepositoryUrl>
   </PropertyGroup>
 
 </Project>
