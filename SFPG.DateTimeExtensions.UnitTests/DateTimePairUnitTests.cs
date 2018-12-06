@@ -16,8 +16,10 @@ namespace SFPG.DateTimeExtensions.UnitTests
         [InlineData(5, 11, 59, 58, 05, 12, 0, 03, "PM")]
         [InlineData(5, 11, 59, 58, 05, 12, 0, 01, "AM")]
         [InlineData(7, 22, 00, 00, 05, 9, 0, 00, "PM")]
-        [InlineData(7, 03, 00, 00, 05, 11, 0, 00, "AM")]
+        [InlineData(7, 11, 00, 00, 05, 11, 0, 00, "AM")]
+        [InlineData(7, 11, 00, 00, 05, 11, 01, 00, "PM")] 
         [InlineData(5, 23, 00, 00, 30, 03, 00, 00, "AM")]
+        [InlineData(5, 11, 00, 00, 6, 01, 00, 00, "PM")]
         public void CalculatesAverageMeridian_WorksWithSameMonthAndYear(
             int dayOne, int hourOne, int minuteOne, int secondOne,
             int dayTwo, int hourTwo, int minuteTwo, int secondTwo,
