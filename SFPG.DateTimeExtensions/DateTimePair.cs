@@ -43,7 +43,7 @@ namespace SFPG.DateTimeExtensions
             var startsAndEndsInPm = PmStart && PmEnd; 
             // sum time spent in the AM between: earliest and meridian after it, and, between: latest and meridian before it, and,
             // add extra period of AM time, if both times start in the PM, and, are more than 12 hours apart (unbalanced dividing meridian periods).
-            var am = (PmStart ? 0 : earliestToMeridian.Ticks) +
+            var am = (PmStart ? 0 : earliestToMeridian.Ticks - new TimeSpan(0, 0, 0, 1).Ticks) +
                      (AmEnd ? meridianToLatest.Ticks : 0) +
                      (moreThanOneDividingMeridianPeriod && startsAndEndsInPm ? TicksInMeridian: 0); //offset for unbalanced, dividing, AM period.
             return am;

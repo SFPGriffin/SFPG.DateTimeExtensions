@@ -9,6 +9,7 @@ namespace SFPG.DateTimeExtensions.UnitTests
     public class DateTimePairUnitTests
     {
         [Theory]
+        [InlineData(5, 11, 00, 00, 05, 13, 00, 00, "PM")]
         [InlineData(5, 11, 00, 00, 05, 14, 00, 00, "PM")]
         [InlineData(5, 06, 00, 00, 05, 14, 00, 00, "AM")]
         [InlineData(5, 11, 58, 00, 05, 12, 3, 00, "PM")]
@@ -16,7 +17,7 @@ namespace SFPG.DateTimeExtensions.UnitTests
         [InlineData(5, 11, 59, 58, 05, 12, 0, 03, "PM")]
         [InlineData(5, 11, 59, 58, 05, 12, 0, 01, "AM")]
         [InlineData(7, 22, 00, 00, 05, 9, 0, 00, "PM")]
-        [InlineData(7, 11, 00, 00, 05, 11, 0, 00, "AM")]
+        [InlineData(7, 11, 00, 01, 05, 11, 00, 0, "AM")]
         [InlineData(7, 11, 00, 00, 05, 11, 01, 00, "PM")] 
         [InlineData(5, 23, 00, 00, 30, 03, 00, 00, "AM")]
         [InlineData(5, 11, 00, 00, 6, 01, 00, 00, "PM")]

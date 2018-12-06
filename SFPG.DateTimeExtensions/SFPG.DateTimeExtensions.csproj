@@ -7,6 +7,7 @@
     <Copyright>S. F. P. Griffin</Copyright>
     <PackageLicenseUrl>https://www.gnu.org/licenses/gpl-3.0.txt</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/SFPGriffin/SFPG.DateTimeExtensions</RepositoryUrl>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
 </Project>
