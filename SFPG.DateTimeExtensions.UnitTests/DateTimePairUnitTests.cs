@@ -92,7 +92,7 @@ namespace SFPG.DateTimeExtensions.UnitTests
                 .Result;
 
             result.Success.Should().BeTrue();
-            result.Result.Should().Be("AM");
+            result.Value.Should().Be("AM");
         }
 
         [Fact]
@@ -109,7 +109,7 @@ namespace SFPG.DateTimeExtensions.UnitTests
                 .Result;
 
             result.Success.Should().BeFalse();
-            result.Result.Should().Be("Argh, the dates are on different days.");
+            result.Value.Should().Be("Argh, the dates are on different days.");
         }
 
         [Fact]
@@ -126,7 +126,7 @@ namespace SFPG.DateTimeExtensions.UnitTests
                 .Result;
 
             result.Success.Should().BeFalse();
-            result.Result.Should().Be("Oh no! The dates are the same.");
+            result.Value.Should().Be("Oh no! The dates are the same.");
         }
 
         [Fact]
@@ -143,7 +143,7 @@ namespace SFPG.DateTimeExtensions.UnitTests
                 .Result;
 
             result.Success.Should().BeTrue();
-            result.Result.Should().Be("AM");
+            result.Value.Should().Be("AM");
         }
     }
 }

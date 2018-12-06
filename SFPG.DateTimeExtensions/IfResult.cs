@@ -6,12 +6,12 @@ namespace SFPG.DateTimeExtensions
     {
         public bool Success { get; }
 
-        public TResult Result { get; }
+        public TResult Value { get; }
 
-        internal IfResult(bool success, TResult result)
+        internal IfResult(bool success, TResult value)
         {
             Success = success;
-            Result = result;
+            Value = value;
         }
     }
 }
