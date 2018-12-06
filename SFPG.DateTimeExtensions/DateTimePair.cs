@@ -25,6 +25,8 @@ namespace SFPG.DateTimeExtensions
 
         private long TicksInMeridian => TimeSpan.TicksPerHour * HoursInMeridian;
 
+        public IfBlock<DateTimePair, string> AreSameDay => new IfBlock<DateTimePair, string>(One.Date == Two.Date, this);
+        public IfBlock<DateTimePair, string> AreNotSameDay => new IfBlock<DateTimePair, string>(One.Date != Two.Date, this);
 
         public string CalculateAverageMeridian()
         {

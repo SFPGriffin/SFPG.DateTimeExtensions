@@ -77,5 +77,73 @@ namespace SFPG.DateTimeExtensions.UnitTests
 
             pair.CalculateAverageMeridian().Should().Be(expected);
         }
+
+        [Fact]
+        public void AreSameDay_WorksWithThen()
+        {
+            var dateOne = new DateTime(2018, 11, 6, 10, 0, 0);
+            var dateTwo = new DateTime(2018, 11, 6, 11, 0, 0);
+
+            var result = dateOne
+                .And(dateTwo)
+                .AreSameDay
+                .Then(dtp => dtp.CalculateAverageMeridian())
+                .Else(dtp => "Argh, the dates are on different days.")
+                .Result;
+
+            result.Success.Should().BeTrue();
+            result.Result.Should().Be("AM");
+        }
+
+        [Fact]
+        public void AreSameDay_WorksWithElse()
+        {
+            var dateOne = new DateTime(2018, 11, 6, 10, 0, 0);
+            var dateTwo = new DateTime(2018, 11, 7, 11, 0, 0);
+
+            var result = dateOne
+                .And(dateTwo)
+                .AreSameDay
+                .Then(dtp => dtp.CalculateAverageMeridian())
+                .Else(dtp => "Argh, the dates are on different days.")
+                .Result;
+
+            result.Success.Should().BeFalse();
+            result.Result.Should().Be("Argh, the dates are on different days.");
+        }
+
+        [Fact]
+        public void AreNotSameDay_WorksWithThen()
+        {
+            var dateOne = new DateTime(2018, 11, 6, 10, 0, 0);
+            var dateTwo = new DateTime(2018, 11, 6, 11, 0, 0);
+
+            var result = dateOne
+                .And(dateTwo)
+                .AreNotSameDay
+                .Then(dtp => dtp.CalculateAverageMeridian())
+                .Else(dtp => "Oh no! The dates are the same.")
+                .Result;
+
+            result.Success.Should().BeFalse();
+            result.Result.Should().Be("Oh no! The dates are the same.");
+        }
+
+        [Fact]
+        public void AreNotSameDay_WorksWithElse()
+        {
+            var dateOne = new DateTime(2018, 11, 6, 10, 0, 0);
+            var dateTwo = new DateTime(2018, 11, 7, 11, 0, 0);
+
+            var result = dateOne
+                .And(dateTwo)
+                .AreNotSameDay
+                .Then(dtp => dtp.CalculateAverageMeridian())
+                .Else(dtp => "Oh no! The dates are the same")
+                .Result;
+
+            result.Success.Should().BeTrue();
+            result.Result.Should().Be("AM");
+        }
     }
 }
