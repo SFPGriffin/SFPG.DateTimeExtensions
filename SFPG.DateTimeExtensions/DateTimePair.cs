@@ -40,10 +40,11 @@ namespace SFPG.DateTimeExtensions
         private long GetAmTotal(TimeSpan earliestToMeridian, TimeSpan meridianToLatest)
         {
             var moreThanOneDividingMeridianPeriod = (Latest - Earliest).TotalHours >= HoursInMeridian;
-            var startsAndEndsInPm = PmStart && PmEnd; 
+            var startsAndEndsInPm = PmStart && PmEnd;
+            const long PmBoundaryOffset = 1; // because distance from am time to 12:00 needs to not include 12:00 itself as 12:00 itself is PM.
             // sum time spent in the AM between: earliest and meridian after it, and, between: latest and meridian before it, and,
             // add extra period of AM time, if both times start in the PM, and, are more than 12 hours apart (unbalanced dividing meridian periods).
-            var am = (PmStart ? 0 : earliestToMeridian.Ticks - new TimeSpan(0, 0, 0, 1).Ticks) +
+            var am = (PmStart ? 0 : earliestToMeridian.Ticks -  PmBoundaryOffset) +
                      (AmEnd ? meridianToLatest.Ticks : 0) +
                      (moreThanOneDividingMeridianPeriod && startsAndEndsInPm ? TicksInMeridian: 0); //offset for unbalanced, dividing, AM period.
             return am;
