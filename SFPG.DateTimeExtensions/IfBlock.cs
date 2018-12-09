@@ -1,4 +1,4 @@
-﻿// Copyright S. F. P. Griffin 2018, License: GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007.
+﻿// Copyright S. F. P. Griffin 2018, License: GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007.
 
 using System.ComponentModel;
 
