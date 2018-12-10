@@ -40,6 +40,16 @@ namespace SFPG.DateTimeExtensions
             return this;
         }
 
+        public IfBlock<TOriginalObject, TResult> ThrowOnFail(Exception ex)
+        {
+            if (!_isTrue)
+            {
+                throw ex;
+            }
+
+            return this;
+        }
+
         public  IfResult<TResult> Result => new IfResult<TResult>(_isTrue, _result);
     }
 }

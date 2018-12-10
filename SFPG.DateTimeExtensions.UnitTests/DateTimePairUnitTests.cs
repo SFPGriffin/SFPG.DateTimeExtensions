@@ -30,7 +30,7 @@ namespace SFPG.DateTimeExtensions.UnitTests
             var dateTwo = new DateTime(2018, 11, dayTwo, hourTwo, minuteTwo, secondTwo);
             var pair = new DateTimePair(dateOne, dateTwo);
 
-            pair.CalculateAverageMeridian().Should().Be(expected);
+            pair.GetAverageOfAmOrPm().Should().Be(expected);
         }
 
         [Theory]
@@ -45,7 +45,7 @@ namespace SFPG.DateTimeExtensions.UnitTests
             var dateTwo = new DateTime(2018, 12, dayTwo, hourTwo, minuteTwo, secondTwo);
             var pair = new DateTimePair(dateOne, dateTwo);
 
-            pair.CalculateAverageMeridian().Should().Be(expected);
+            pair.GetAverageOfAmOrPm().Should().Be(expected);
         }
 
         [Theory]
@@ -60,7 +60,7 @@ namespace SFPG.DateTimeExtensions.UnitTests
             var dateTwo = new DateTime(2019, 11, dayTwo, hourTwo, minuteTwo, secondTwo);
             var pair = new DateTimePair(dateOne, dateTwo);
 
-            pair.CalculateAverageMeridian().Should().Be(expected);
+            pair.GetAverageOfAmOrPm().Should().Be(expected);
         }
 
         [Theory]
@@ -75,7 +75,7 @@ namespace SFPG.DateTimeExtensions.UnitTests
             var dateTwo = new DateTime(2019, 03, dayTwo, hourTwo, minuteTwo, secondTwo);
             var pair = new DateTimePair(dateOne, dateTwo);
 
-            pair.CalculateAverageMeridian().Should().Be(expected);
+            pair.GetAverageOfAmOrPm().Should().Be(expected);
         }
 
         [Fact]
@@ -87,7 +87,7 @@ namespace SFPG.DateTimeExtensions.UnitTests
             var result = dateOne
                 .And(dateTwo)
                 .AreSameDay
-                .Then(dtp => dtp.CalculateAverageMeridian())
+                .Then(dtp => dtp.GetAverageOfAmOrPm())
                 .Else(dtp => "Argh, the dates are on different days.")
                 .Result;
 
@@ -104,7 +104,7 @@ namespace SFPG.DateTimeExtensions.UnitTests
             var result = dateOne
                 .And(dateTwo)
                 .AreSameDay
-                .Then(dtp => dtp.CalculateAverageMeridian())
+                .Then(dtp => dtp.GetAverageOfAmOrPm())
                 .Else(dtp => "Argh, the dates are on different days.")
                 .Result;
 
@@ -113,7 +113,43 @@ namespace SFPG.DateTimeExtensions.UnitTests
         }
 
         [Fact]
+        public void AreSameDay_WorksWithThrowOnFail()
+        {
+            var dateOne = new DateTime(2018, 11, 6, 10, 0, 0);
+            var dateTwo = new DateTime(2018, 11, 7, 11, 0, 0);
+
+            Action action = () =>
+            {
+                var result = dateOne
+                    .And(dateTwo)
+                    .AreSameDay
+                    .Then(dtp => dtp.GetAverageOfAmOrPm())
+                    .ThrowOnFail(new ArgumentException("Argh, the dates are on different days.", "Date"))
+                    .Result;
+            };
+
+            action.Should().ThrowExactly<ArgumentException>("Argh, the dates are on different days", "Date");
+        }
+
+        [Fact]
         public void AreNotSameDay_WorksWithThen()
+        {
+            var dateOne = new DateTime(2018, 11, 6, 10, 0, 0);
+            var dateTwo = new DateTime(2018, 11, 7, 11, 0, 0);
+
+            var result = dateOne
+                .And(dateTwo)
+                .AreNotSameDay
+                .Then(dtp => dtp.GetAverageOfAmOrPm())
+                .Else(dtp => "Oh no! The dates are the same")
+                .Result;
+
+            result.Success.Should().BeTrue();
+            result.Value.Should().Be("AM");
+        }
+
+        [Fact]
+        public void AreNotSameDay_WorksWithElse()
         {
             var dateOne = new DateTime(2018, 11, 6, 10, 0, 0);
             var dateTwo = new DateTime(2018, 11, 6, 11, 0, 0);
@@ -121,7 +157,7 @@ namespace SFPG.DateTimeExtensions.UnitTests
             var result = dateOne
                 .And(dateTwo)
                 .AreNotSameDay
-                .Then(dtp => dtp.CalculateAverageMeridian())
+                .Then(dtp => dtp.GetAverageOfAmOrPm())
                 .Else(dtp => "Oh no! The dates are the same.")
                 .Result;
 
@@ -130,20 +166,22 @@ namespace SFPG.DateTimeExtensions.UnitTests
         }
 
         [Fact]
-        public void AreNotSameDay_WorksWithElse()
+        public void AreNotSameDay_WorksWithThrowOnFail()
         {
             var dateOne = new DateTime(2018, 11, 6, 10, 0, 0);
-            var dateTwo = new DateTime(2018, 11, 7, 11, 0, 0);
+            var dateTwo = new DateTime(2018, 11, 6, 11, 0, 0); ;
 
-            var result = dateOne
-                .And(dateTwo)
-                .AreNotSameDay
-                .Then(dtp => dtp.CalculateAverageMeridian())
-                .Else(dtp => "Oh no! The dates are the same")
-                .Result;
+            Action action = () =>
+            {
+                var result = dateOne
+                    .And(dateTwo)
+                    .AreNotSameDay
+                    .Then(dtp => dtp.GetAverageOfAmOrPm())
+                    .ThrowOnFail(new ArgumentException("Oh no! The dates are the same", "Date"))
+                    .Result;
+            };
 
-            result.Success.Should().BeTrue();
-            result.Value.Should().Be("AM");
+            action.Should().ThrowExactly<ArgumentException>("Oh no! The dates are the same", "Date");
         }
     }
 }

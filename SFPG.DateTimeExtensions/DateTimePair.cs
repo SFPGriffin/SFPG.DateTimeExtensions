@@ -12,8 +12,6 @@ namespace SFPG.DateTimeExtensions
             Two = two;
         }
 
-        private const int HoursInMeridian = 12;
-
         private DateTime One { get; set; }
         private DateTime Two { get; set; }
         private DateTime Earliest => One < Two ? One : Two;
@@ -23,44 +21,46 @@ namespace SFPG.DateTimeExtensions
         private bool AmEnd => Latest.Hour < 12;
         private bool PmEnd => !AmEnd;
 
-        private long TicksInMeridian => TimeSpan.TicksPerHour * HoursInMeridian;
+        private const int TwelveHours = 12;
+
+        private long TicksInHalfday => TimeSpan.TicksPerHour * TwelveHours;
 
         public IfBlock<DateTimePair, string> AreSameDay => new IfBlock<DateTimePair, string>(One.Date == Two.Date, this);
         public IfBlock<DateTimePair, string> AreNotSameDay => new IfBlock<DateTimePair, string>(One.Date != Two.Date, this);
 
-        public string CalculateAverageMeridian()
+        public string GetAverageOfAmOrPm()
         {
-            var meridianAfterEarliest = new DateTime(Earliest.Year, Earliest.Month, Earliest.Day, PmStart ? 0 : 12, 0, 0);
-            var meridianBeforeLatest = new DateTime(Latest.Year, Latest.Month, Latest.Day, AmEnd ? 0 : 12, 0, 0);
-            var earliestToMeridian = meridianAfterEarliest - Earliest;
-            var meridianToLatest = Latest - meridianBeforeLatest;
-            var am = GetAmTotal(earliestToMeridian, meridianToLatest); 
-            var pm = GetPmTotal(earliestToMeridian, meridianToLatest);
+            var TwelveOfClockAfterEarliest = new DateTime(Earliest.Year, Earliest.Month, Earliest.Day, PmStart ? 0 : 12, 0, 0);
+            var TwelveofClockBeforeLatest = new DateTime(Latest.Year, Latest.Month, Latest.Day, AmEnd ? 0 : 12, 0, 0);
+            var earliestToTwelveOfClock = TwelveOfClockAfterEarliest - Earliest;
+            var twelveOfClockToLatest = Latest - TwelveofClockBeforeLatest;
+            var am = GetAmTotal(earliestToTwelveOfClock, twelveOfClockToLatest); 
+            var pm = GetPmTotal(earliestToTwelveOfClock, twelveOfClockToLatest);
             return am >= pm ? "AM" : "PM";
         }
 
-        private long GetAmTotal(TimeSpan earliestToMeridian, TimeSpan meridianToLatest)
+        private long GetAmTotal(TimeSpan earliestToTwelveOfClock, TimeSpan twelveOfClockToLatest)
         {
-            var moreThanOneDividingMeridianPeriod = (Latest - Earliest).TotalHours >= HoursInMeridian;
+            var moreThanOneDividingHalfday = (Latest - Earliest).TotalHours >= TwelveHours;
             var startsAndEndsInPm = PmStart && PmEnd;
             const long PmBoundaryOffset = 1; // because distance from am time to 12:00 needs to not include 12:00 itself as 12:00 itself is PM.
-            // sum time spent in the AM between: earliest and meridian after it, and, between: latest and meridian before it, and,
-            // add extra period of AM time, if both times start in the PM, and, are more than 12 hours apart (unbalanced dividing meridian periods).
-            var am = (PmStart ? 0 : earliestToMeridian.Ticks -  PmBoundaryOffset) +
-                     (AmEnd ? meridianToLatest.Ticks : 0) +
-                     (moreThanOneDividingMeridianPeriod && startsAndEndsInPm ? TicksInMeridian: 0); //offset for unbalanced, dividing, AM period.
+            // sum time spent in the AM between: earliest and the twelve of the clock after it, and, between: latest and the twelve of the clock before it, and,
+            // add extra period of AM time, if both times start in the PM, and, are more than 12 hours apart (unbalanced dividing half days).
+            var am = (PmStart ? 0 : earliestToTwelveOfClock.Ticks -  PmBoundaryOffset) +
+                     (AmEnd ? twelveOfClockToLatest.Ticks : 0) +
+                     (moreThanOneDividingHalfday && startsAndEndsInPm ? TicksInHalfday: 0); //offset for unbalanced, dividing, AM period.
             return am;
         }
 
-        private long GetPmTotal(TimeSpan earliestToMeridian, TimeSpan meridianToLatest)
+        private long GetPmTotal(TimeSpan earliestToTwelveOfClock, TimeSpan twelveOfClockToLatest)
         {
-            var moreThanOneDividingMeridianPeriod = (Latest - Earliest).TotalHours >= HoursInMeridian;
+            var moreThanOneDividingHalfDay = (Latest - Earliest).TotalHours >= TwelveHours;
             var startsAndEndsInAm = AmStart && AmEnd; 
-            // sum time spent in the PM between: earliest and meridian after it, and, between: latest and meridian before it, and,
-            // add extra period of PM time, if both times start in the AM, and, are more than 12 hours apart (unbalanced dividing meridian periods).
-            var pm = (PmStart ? earliestToMeridian.Ticks : 0) +
-                     (AmEnd ? 0 : meridianToLatest.Ticks) +
-                     (moreThanOneDividingMeridianPeriod && startsAndEndsInAm ? TicksInMeridian : 0); // offset for unbalanced, diving, PM period.
+            // sum time spent in the PM between: earliest and the twelve of the clock after it, and, between: latest and the twelve of the clock before it, and,
+            // add extra period of PM time, if both times start in the AM, and, are more than 12 hours apart (unbalanced dividing half days).
+            var pm = (PmStart ? earliestToTwelveOfClock.Ticks : 0) +
+                     (AmEnd ? 0 : twelveOfClockToLatest.Ticks) +
+                     (moreThanOneDividingHalfDay && startsAndEndsInAm ? TicksInHalfday : 0); // offset for unbalanced, diving, PM period.
             return pm;
         }
 
